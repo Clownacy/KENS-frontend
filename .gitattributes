@@ -1,0 +1,6 @@
+*.c		text
+*.h		text
+*.pas		text
+*.HTML		text
+*.bat		text
+*.dll		binary
