@@ -3,6 +3,7 @@
 #define WinExplorer
 
 #include <stdio.h>
+#include <cstring>
 #include "KENS/Include/KENS.h"
 
 	/*
