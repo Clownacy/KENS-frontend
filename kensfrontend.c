@@ -3,7 +3,6 @@
 #define WinExplorer
 
 #include <stdio.h>
-#include "KENS/Include/Nemesis.h"
 #include "KENS/Include/Saxman.h"
 
 	/*
@@ -17,7 +16,8 @@ long KComp(char *SrcFile, char *DstFile, int SlideWin, int RecLen, bool Moduled)
 long KDecomp(char *SrcFile, char *DstFile, long Pointer, bool Moduled);
 long EComp(char *SrcFile, char *DstFile, bool Padding);
 long EDecomp(char *SrcFile, char *DstFile, long Pointer, bool Padding);
-char nempath[] = "libs/Nemesis.dll";
+long NComp(char *SrcFile, char *DstFile);
+long NDecomp(char *SrcFile, char *DstFile, long Pointer);
 char saxpath[] = "libs/Saxman.dll";
 
 void usage ( char programName[] )
@@ -44,11 +44,6 @@ void handleModuleError ( bool success, char *name )
 		checkFileExist( name );	// Check if our error is the module file being missing
 		exit(1);
 	}
-}
-
-void initNemesisModule()
-{
-	handleModuleError( NInit(nempath), nempath );
 }
 
 void initSaxmanModule()
@@ -85,15 +80,9 @@ int main ( int argc, char *argv[1] )
 		else if ( strcmp( argv[1], "ed" ) == 0 )
 			EDecomp( argv[2], argv[3], 0, false );
 		else if ( strcmp( argv[1], "nc" ) == 0 )
-		{
-			initNemesisModule();
 			NComp( argv[2], argv[3] );
-		}
 		else if ( strcmp( argv[1], "nd" ) == 0 )
-		{
-			initNemesisModule();
 			NDecomp( argv[2], argv[3], 0 );
-		}
 		else if ( strcmp( argv[1], "sc" ) == 0 )
 		{
 			initSaxmanModule();
