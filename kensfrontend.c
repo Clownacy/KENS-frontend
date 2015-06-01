@@ -35,7 +35,7 @@ void handleModuleError ( bool success, char *name )
 {
 	if (success == false)
 	{
-		printf( "\n  Error initialising %s\n", name);
+		printf( "\n  Error initialising %s\n", name );
 		checkFileExist( name );	// Check if our error is the module file being missing
 		exit(1);
 	}
@@ -43,22 +43,22 @@ void handleModuleError ( bool success, char *name )
 
 void initKosinskiModule()
 {
-	handleModuleError(KInit(kospath), kospath);
+	handleModuleError( KInit(kospath), kospath );
 }
 
 void initEnigmaModule()
 {
-	handleModuleError(EInit(enipath), enipath);
+	handleModuleError( EInit(enipath), enipath );
 }
 
 void initNemesisModule()
 {
-	handleModuleError(NInit(nempath), nempath);
+	handleModuleError( NInit(nempath), nempath );
 }
 
 void initSaxmanModule()
 {
-	handleModuleError(SInit(saxpath), saxpath);
+	handleModuleError( SInit(saxpath), saxpath );
 }
 
 int main ( int argc, char *argv[1] )
@@ -70,47 +70,46 @@ int main ( int argc, char *argv[1] )
 	}
 	checkFileExist( argv[2] );
 
-
 	// Mode handlers
 	if ( strcmp( argv[1], "kc" ) == 0 )
 	{
 		initKosinskiModule();
-		KComp( argv[2], argv[3], false);
+		KComp( argv[2], argv[3], false );
 	}
 	else if ( strcmp( argv[1], "kd" ) == 0 )
 	{
 		initKosinskiModule();
-		KDecomp( argv[2], argv[3], 0, false);
+		KDecomp( argv[2], argv[3], 0, false );
 	}
 	else if ( strcmp( argv[1], "ec" ) == 0 )
 	{
 		initEnigmaModule();
-		EComp( argv[2], argv[3], false);
+		EComp( argv[2], argv[3], false );
 	}
 	else if ( strcmp( argv[1], "ed" ) == 0 )
 	{
 		initEnigmaModule();
-		EDecomp( argv[2], argv[3], 0, false);
+		EDecomp( argv[2], argv[3], 0, false );
 	}
 	else if ( strcmp( argv[1], "nc" ) == 0 )
 	{
 		initNemesisModule();
-		NComp( argv[2], argv[3]);
+		NComp( argv[2], argv[3] );
 	}
 	else if ( strcmp( argv[1], "nd" ) == 0 )
 	{
 		initNemesisModule();
-		NDecomp( argv[2], argv[3], 0);
+		NDecomp( argv[2], argv[3], 0 );
 	}
 	else if ( strcmp( argv[1], "sc" ) == 0 )
 	{
 		initSaxmanModule();
-		SComp( argv[2], argv[3], false);
+		SComp( argv[2], argv[3], false );
 	}
 	else if ( strcmp( argv[1], "sd" ) == 0 )
 	{
 		initSaxmanModule();
-		SDecomp( argv[2], argv[3], 0, 0);
+		SDecomp( argv[2], argv[3], 0, 0 );
 	}
 	else
 		usage( argv[0] );
