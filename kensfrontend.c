@@ -65,66 +65,68 @@ void initSaxmanModule()
 
 int main ( int argc, char *argv[1] )
 {
+	switch ( argc )
+	{
+	default:
+		usage( argv[0] );
+		break;
+
 	#ifdef WinExplorer
 		// If opened by Explorer, don't close immediately
-		if ( argc == 1 )
-		{
+		case 1:
 			usage( argv[0] );
 			getchar();
-			exit(1);
-		}
+			break;
 	#endif
 
-	if ( argc != 4 )
-	{
-		usage( argv[0] );
-		exit(1);
-	}
-	checkFileExist( argv[2] );
+	case 4:
+		checkFileExist( argv[2] );
 
-	// Mode handlers
-	if ( strcmp( argv[1], "kc" ) == 0 )
-	{
-		initKosinskiModule();
-		KComp( argv[2], argv[3], false );
+		// Mode handlers
+		if ( strcmp( argv[1], "kc" ) == 0 )
+		{
+			initKosinskiModule();
+			KComp( argv[2], argv[3], false );
+		}
+		else if ( strcmp( argv[1], "kd" ) == 0 )
+		{
+			initKosinskiModule();
+			KDecomp( argv[2], argv[3], 0, false );
+		}
+		else if ( strcmp( argv[1], "ec" ) == 0 )
+		{
+			initEnigmaModule();
+			EComp( argv[2], argv[3], false );
+		}
+		else if ( strcmp( argv[1], "ed" ) == 0 )
+		{
+			initEnigmaModule();
+			EDecomp( argv[2], argv[3], 0, false );
+		}
+		else if ( strcmp( argv[1], "nc" ) == 0 )
+		{
+			initNemesisModule();
+			NComp( argv[2], argv[3] );
+		}
+		else if ( strcmp( argv[1], "nd" ) == 0 )
+		{
+			initNemesisModule();
+			NDecomp( argv[2], argv[3], 0 );
+		}
+		else if ( strcmp( argv[1], "sc" ) == 0 )
+		{
+			initSaxmanModule();
+			SComp( argv[2], argv[3], false );
+		}
+		else if ( strcmp( argv[1], "sd" ) == 0 )
+		{
+			initSaxmanModule();
+			SDecomp( argv[2], argv[3], 0, 0 );
+		}
+		else
+			usage( argv[0] );
+		break;
 	}
-	else if ( strcmp( argv[1], "kd" ) == 0 )
-	{
-		initKosinskiModule();
-		KDecomp( argv[2], argv[3], 0, false );
-	}
-	else if ( strcmp( argv[1], "ec" ) == 0 )
-	{
-		initEnigmaModule();
-		EComp( argv[2], argv[3], false );
-	}
-	else if ( strcmp( argv[1], "ed" ) == 0 )
-	{
-		initEnigmaModule();
-		EDecomp( argv[2], argv[3], 0, false );
-	}
-	else if ( strcmp( argv[1], "nc" ) == 0 )
-	{
-		initNemesisModule();
-		NComp( argv[2], argv[3] );
-	}
-	else if ( strcmp( argv[1], "nd" ) == 0 )
-	{
-		initNemesisModule();
-		NDecomp( argv[2], argv[3], 0 );
-	}
-	else if ( strcmp( argv[1], "sc" ) == 0 )
-	{
-		initSaxmanModule();
-		SComp( argv[2], argv[3], false );
-	}
-	else if ( strcmp( argv[1], "sd" ) == 0 )
-	{
-		initSaxmanModule();
-		SDecomp( argv[2], argv[3], 0, 0 );
-	}
-	else
-		usage( argv[0] );
 
 	// Done
 	return(0);
