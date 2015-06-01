@@ -22,7 +22,7 @@
 // s1 special stage decompressor.cpp : Defines the entry point for the console application.
 //
 
-#include "iostream.h"
+#include <iostream>
 #include <malloc.h>
 #include <fcntl.h>
 #include <sys/stat.h>

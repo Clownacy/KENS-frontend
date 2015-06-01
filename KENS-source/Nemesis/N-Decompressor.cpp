@@ -25,7 +25,7 @@
 // Programmed by Roger Sanders (AKA Nemesis) and William Sanders (AKA Milamber)
 // Created 4/11/02		Last modified 25/11/02
 
-#include "iostream.h"
+#include <iostream>
 #include <malloc.h>
 #include <fcntl.h>
 #include <sys/stat.h>

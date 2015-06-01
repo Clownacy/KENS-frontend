@@ -40,7 +40,7 @@
 |											Created 6/8/2003  Last modified 14/6/2003
 \*-------------------------------------------------------------------------------------*/
 
-#include "iostream.h"
+#include <iostream>
 #include <malloc.h>
 #include <fcntl.h>
 #include <sys/stat.h>
