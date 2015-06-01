@@ -25,14 +25,16 @@ void usage ( char programName[] )
 	printf( "Frontend made by Clownacy\n\n  Usage:  %s [mode] [inputdir] [outputdir]\n\n  Modes:\n   kc - Kosinski (compress)\n   kd - Kosinski (decompress)\n   ec - Enigma (compress)\n   ed - Enigma (decompress)\n   nc - Nemesis (compress)\n   nd - Nemesis (decompress)\n   sc - Saxman (compress)\n   sd - Saxman (decompress)\n", programName );
 }
 
-void checkFileExist ( char *filename )
+bool checkFileExist ( char *filename )
 {
 	FILE *file = fopen( filename, "r" );
 	if ( file == NULL )
 	{
 		printf( "\n  File '%s' not found\n", filename );
-		exit(1);
+		return false;
 	}
+	else
+		return true;
 	fclose( file );
 }
 
@@ -53,7 +55,8 @@ int main ( int argc, char *argv[1] )
 	#endif
 
 	case 4:
-		checkFileExist( argv[2] );
+		if ( checkFileExist( argv[2] ) == false )
+			break;
 
 		// Mode handlers
 		if ( strcmp( argv[1], "kc" ) == 0 )
