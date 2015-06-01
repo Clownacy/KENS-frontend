@@ -1,5 +1,7 @@
 // Clownacy's KENS v1.4 frontend
 
+#define WinExplorer
+
 #include <stdio.h>
 #include "KENS/Include/KENS.h"
 
@@ -63,6 +65,16 @@ void initSaxmanModule()
 
 int main ( int argc, char *argv[1] )
 {
+	#ifdef WinExplorer
+		// If opened by Explorer, don't close immediately
+		if ( argc == 1 )
+		{
+			usage( argv[0] );
+			getchar();
+			exit(1);
+		}
+	#endif
+
 	if ( argc != 4 )
 	{
 		usage( argv[0] );
