@@ -1,0 +1,13 @@
+LIBRARY "Enigma"
+DESCRIPTION "Compression / Decompression of data in Enigma format"
+
+EXPORTS
+	Comp		@01
+	Decomp		@02
+	CompToBuf	@03
+	DecompToBuf	@04
+	FreeBuffer  @05
+	VBComp		@11
+	VBDecomp	@12
+	GMComp		@21
+	GMDecomp	@22
