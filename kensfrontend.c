@@ -3,7 +3,6 @@
 #define WinExplorer
 
 #include <stdio.h>
-#include "KENS/Include/Kosinski.h"
 #include "KENS/Include/Enigma.h"
 #include "KENS/Include/Nemesis.h"
 #include "KENS/Include/Saxman.h"
@@ -15,7 +14,8 @@
 	argv[3] = Output path
 	*/
 
-char kospath[] = "libs/Kosinski.dll";
+long KComp(char *SrcFile, char *DstFile, int SlideWin, int RecLen, bool Moduled);
+long KDecomp(char *SrcFile, char *DstFile, long Pointer, bool Moduled);
 char enipath[] = "libs/Enigma.dll";
 char nempath[] = "libs/Nemesis.dll";
 char saxpath[] = "libs/Saxman.dll";
@@ -44,11 +44,6 @@ void handleModuleError ( bool success, char *name )
 		checkFileExist( name );	// Check if our error is the module file being missing
 		exit(1);
 	}
-}
-
-void initKosinskiModule()
-{
-	handleModuleError( KInit(kospath), kospath );
 }
 
 void initEnigmaModule()
@@ -87,15 +82,9 @@ int main ( int argc, char *argv[1] )
 
 		// Mode handlers
 		if ( strcmp( argv[1], "kc" ) == 0 )
-		{
-			initKosinskiModule();
-			KComp( argv[2], argv[3], false );
-		}
+			KComp( argv[2], argv[3], 8192, 256, false );
 		else if ( strcmp( argv[1], "kd" ) == 0 )
-		{
-			initKosinskiModule();
 			KDecomp( argv[2], argv[3], 0, false );
-		}
 		else if ( strcmp( argv[1], "ec" ) == 0 )
 		{
 			initEnigmaModule();
