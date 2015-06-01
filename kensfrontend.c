@@ -3,7 +3,10 @@
 #define WinExplorer
 
 #include <stdio.h>
-#include "KENS/Include/KENS.h"
+#include "KENS/Include/Kosinski.h"
+#include "KENS/Include/Enigma.h"
+#include "KENS/Include/Nemesis.h"
+#include "KENS/Include/Saxman.h"
 
 	/*
 	argv[0] = Program name
