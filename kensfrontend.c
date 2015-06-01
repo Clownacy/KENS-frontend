@@ -3,7 +3,6 @@
 #define WinExplorer
 
 #include <stdio.h>
-#include "KENS/Include/Saxman.h"
 
 	/*
 	argv[0] = Program name
@@ -18,7 +17,8 @@ long EComp(char *SrcFile, char *DstFile, bool Padding);
 long EDecomp(char *SrcFile, char *DstFile, long Pointer, bool Padding);
 long NComp(char *SrcFile, char *DstFile);
 long NDecomp(char *SrcFile, char *DstFile, long Pointer);
-char saxpath[] = "libs/Saxman.dll";
+long SComp(char *SrcFile, char *DstFile, bool WithSize);
+long SDecomp(char *SrcFile, char *DstFile, long Pointer, unsigned short Size);
 
 void usage ( char programName[] )
 {
@@ -44,11 +44,6 @@ void handleModuleError ( bool success, char *name )
 		checkFileExist( name );	// Check if our error is the module file being missing
 		exit(1);
 	}
-}
-
-void initSaxmanModule()
-{
-	handleModuleError( SInit(saxpath), saxpath );
 }
 
 int main ( int argc, char *argv[1] )
@@ -84,15 +79,9 @@ int main ( int argc, char *argv[1] )
 		else if ( strcmp( argv[1], "nd" ) == 0 )
 			NDecomp( argv[2], argv[3], 0 );
 		else if ( strcmp( argv[1], "sc" ) == 0 )
-		{
-			initSaxmanModule();
 			SComp( argv[2], argv[3], false );
-		}
 		else if ( strcmp( argv[1], "sd" ) == 0 )
-		{
-			initSaxmanModule();
 			SDecomp( argv[2], argv[3], 0, 0 );
-		}
 		else
 			usage( argv[0] );
 		break;
