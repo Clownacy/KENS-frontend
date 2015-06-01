@@ -36,16 +36,6 @@ void checkFileExist ( char *filename )
 	fclose( file );
 }
 
-void handleModuleError ( bool success, char *name )
-{
-	if (success == false)
-	{
-		printf( "\n  Error initialising %s\n", name );
-		checkFileExist( name );	// Check if our error is the module file being missing
-		exit(1);
-	}
-}
-
 int main ( int argc, char *argv[1] )
 {
 	switch ( argc )
