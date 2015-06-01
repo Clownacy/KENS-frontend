@@ -3,6 +3,7 @@
 #define WinExplorer
 
 #include <stdio.h>
+#include <cstring>
 
 	/*
 	argv[0] = Program name
