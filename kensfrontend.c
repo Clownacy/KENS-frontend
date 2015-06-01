@@ -3,7 +3,6 @@
 #define WinExplorer
 
 #include <stdio.h>
-#include "KENS/Include/Enigma.h"
 #include "KENS/Include/Nemesis.h"
 #include "KENS/Include/Saxman.h"
 
@@ -16,7 +15,8 @@
 
 long KComp(char *SrcFile, char *DstFile, int SlideWin, int RecLen, bool Moduled);
 long KDecomp(char *SrcFile, char *DstFile, long Pointer, bool Moduled);
-char enipath[] = "libs/Enigma.dll";
+long EComp(char *SrcFile, char *DstFile, bool Padding);
+long EDecomp(char *SrcFile, char *DstFile, long Pointer, bool Padding);
 char nempath[] = "libs/Nemesis.dll";
 char saxpath[] = "libs/Saxman.dll";
 
@@ -44,11 +44,6 @@ void handleModuleError ( bool success, char *name )
 		checkFileExist( name );	// Check if our error is the module file being missing
 		exit(1);
 	}
-}
-
-void initEnigmaModule()
-{
-	handleModuleError( EInit(enipath), enipath );
 }
 
 void initNemesisModule()
@@ -86,15 +81,9 @@ int main ( int argc, char *argv[1] )
 		else if ( strcmp( argv[1], "kd" ) == 0 )
 			KDecomp( argv[2], argv[3], 0, false );
 		else if ( strcmp( argv[1], "ec" ) == 0 )
-		{
-			initEnigmaModule();
 			EComp( argv[2], argv[3], false );
-		}
 		else if ( strcmp( argv[1], "ed" ) == 0 )
-		{
-			initEnigmaModule();
 			EDecomp( argv[2], argv[3], 0, false );
-		}
 		else if ( strcmp( argv[1], "nc" ) == 0 )
 		{
 			initNemesisModule();
