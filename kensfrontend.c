@@ -67,6 +67,60 @@ bool initSaxmanModule()
 	return handleModuleError( SInit(saxpath), saxpath );
 }
 
+void processFile ( char *argv[1] )
+{
+	if ( strcmp( argv[1], "kc" ) == 0 )
+	{
+		if ( initKosinskiModule() == false )
+			return;
+		KComp( argv[2], argv[3], false );
+	}
+	else if ( strcmp( argv[1], "kd" ) == 0 )
+	{
+		if ( initKosinskiModule() == false )
+			return;
+		KDecomp( argv[2], argv[3], 0, false );
+	}
+	else if ( strcmp( argv[1], "ec" ) == 0 )
+	{
+		if ( initEnigmaModule() == false )
+			return;
+		EComp( argv[2], argv[3], false );
+	}
+	else if ( strcmp( argv[1], "ed" ) == 0 )
+	{
+		if ( initEnigmaModule() == false )
+			return;
+		EDecomp( argv[2], argv[3], 0, false );
+	}
+	else if ( strcmp( argv[1], "nc" ) == 0 )
+	{
+		if ( initNemesisModule() == false )
+			return;
+		NComp( argv[2], argv[3] );
+	}
+	else if ( strcmp( argv[1], "nd" ) == 0 )
+	{
+		if ( initNemesisModule() == false )
+			return;
+		NDecomp( argv[2], argv[3], 0 );
+	}
+	else if ( strcmp( argv[1], "sc" ) == 0 )
+	{
+		if ( initSaxmanModule() == false )
+			return;
+		SComp( argv[2], argv[3], false );
+	}
+	else if ( strcmp( argv[1], "sd" ) == 0 )
+	{
+		if ( initSaxmanModule() == false )
+			return;
+		SDecomp( argv[2], argv[3], 0, 0 );
+	}
+	else
+		usage( argv[0] );
+}
+
 int main ( int argc, char *argv[1] )
 {
 	switch ( argc )
@@ -87,58 +141,7 @@ int main ( int argc, char *argv[1] )
 		if ( checkFileExist( argv[2] ) == false )
 			break;
 
-		// Mode handlers
-		if ( strcmp( argv[1], "kc" ) == 0 )
-		{
-			if ( initKosinskiModule() == false )
-				break;
-			KComp( argv[2], argv[3], false );
-		}
-		else if ( strcmp( argv[1], "kd" ) == 0 )
-		{
-			if ( initKosinskiModule() == false )
-				break;
-			KDecomp( argv[2], argv[3], 0, false );
-		}
-		else if ( strcmp( argv[1], "ec" ) == 0 )
-		{
-			if ( initEnigmaModule() == false )
-				break;
-			EComp( argv[2], argv[3], false );
-		}
-		else if ( strcmp( argv[1], "ed" ) == 0 )
-		{
-			if ( initEnigmaModule() == false )
-				break;
-			EDecomp( argv[2], argv[3], 0, false );
-		}
-		else if ( strcmp( argv[1], "nc" ) == 0 )
-		{
-			if ( initNemesisModule() == false )
-				break;
-			NComp( argv[2], argv[3] );
-		}
-		else if ( strcmp( argv[1], "nd" ) == 0 )
-		{
-			if ( initNemesisModule() == false )
-				break;
-			NDecomp( argv[2], argv[3], 0 );
-		}
-		else if ( strcmp( argv[1], "sc" ) == 0 )
-		{
-			if ( initSaxmanModule() == false )
-				break;
-			SComp( argv[2], argv[3], false );
-		}
-		else if ( strcmp( argv[1], "sd" ) == 0 )
-		{
-			if ( initSaxmanModule() == false )
-				break;
-			SDecomp( argv[2], argv[3], 0, 0 );
-		}
-		else
-			usage( argv[0] );
-		break;
+		processFile( argv );
 	}
 
 	// Done
