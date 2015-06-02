@@ -1,1 +1,0 @@
-The bin folder has been prepared with the files you should include when redistributing the library. In addition, the Visual C++ projects have been set to output the libraries to this directory after build. So, all you'll have to do when you want to redistribute the library is to pack the content of the bin folder.
