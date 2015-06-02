@@ -5,6 +5,7 @@
 #include <stdio.h>
 //#include <stdbool.h>	// use with C compiler
 #include <string.h>	// use with C++ compiler
+#include <sys/stat.h>
 #include "KENS/Include/KENS.h"
 
 	/*
@@ -26,15 +27,11 @@ void usage ( char programName[] )
 
 bool checkFileExist ( char *filename )
 {
-	FILE *file = fopen( filename, "r" );
-	if ( file == NULL )
-	{
+	struct stat buffer;
+	bool exist = ( stat(filename, &buffer) == 0 );
+	if ( !exist )
 		printf( "\n  File '%s' not found\n", filename );
-		return false;
-	}
-	else
-		return true;
-	fclose( file );
+	return exist;
 }
 
 bool handleModuleError ( bool success, char *name )
