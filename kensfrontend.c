@@ -4,7 +4,7 @@
 
 #include <stdio.h>
 //#include <stdbool.h>	// use with C compiler
-#include <cstring>	// use with C++ compiler
+#include <string.h>	// use with C++ compiler
 
 	/*
 	argv[0] = Program name
