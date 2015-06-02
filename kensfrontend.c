@@ -3,7 +3,8 @@
 #define WinExplorer
 
 #include <stdio.h>
-#include <cstring>
+//#include <stdbool.h>	// use with C compiler
+#include <cstring>	// use with C++ compiler
 #include "KENS/Include/KENS.h"
 
 	/*
