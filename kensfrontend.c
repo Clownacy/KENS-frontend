@@ -142,5 +142,5 @@ int main ( int argc, char *argv[1] )
 	}
 
 	// Done
-	return(0);
+	return 0;
 }
