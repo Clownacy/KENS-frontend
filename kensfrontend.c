@@ -5,6 +5,7 @@
 #include <stdio.h>
 //#include <stdbool.h>	// use with C compiler
 #include <string.h>	// use with C++ compiler
+#include <sys/stat.h>
 
 	/*
 	argv[0] = Program name
@@ -29,15 +30,33 @@ void usage ( char programName[] )
 
 bool checkFileExist ( char *filename )
 {
-	FILE *file = fopen( filename, "r" );
-	if ( file == NULL )
-	{
+	struct stat buffer;
+	bool exist = ( stat(filename, &buffer) == 0 );
+	if ( !exist )
 		printf( "\n  File '%s' not found\n", filename );
-		return false;
-	}
+	return exist;
+}
+
+void processFile ( char *argv[1] )
+{
+	if ( strcmp( argv[1], "kc" ) == 0 )
+		KComp( argv[2], argv[3], 8192, 256, false );
+	else if ( strcmp( argv[1], "kd" ) == 0 )
+		KDecomp( argv[2], argv[3], 0, false );
+	else if ( strcmp( argv[1], "ec" ) == 0 )
+		EComp( argv[2], argv[3], false );
+	else if ( strcmp( argv[1], "ed" ) == 0 )
+		EDecomp( argv[2], argv[3], 0, false );
+	else if ( strcmp( argv[1], "nc" ) == 0 )
+		NComp( argv[2], argv[3] );
+	else if ( strcmp( argv[1], "nd" ) == 0 )
+		NDecomp( argv[2], argv[3], 0 );
+	else if ( strcmp( argv[1], "sc" ) == 0 )
+		SComp( argv[2], argv[3], false );
+	else if ( strcmp( argv[1], "sd" ) == 0 )
+		SDecomp( argv[2], argv[3], 0, 0 );
 	else
-		return true;
-	fclose( file );
+		usage( argv[0] );
 }
 
 int main ( int argc, char *argv[1] )
@@ -60,28 +79,9 @@ int main ( int argc, char *argv[1] )
 		if ( checkFileExist( argv[2] ) == false )
 			break;
 
-		// Mode handlers
-		if ( strcmp( argv[1], "kc" ) == 0 )
-			KComp( argv[2], argv[3], 8192, 256, false );
-		else if ( strcmp( argv[1], "kd" ) == 0 )
-			KDecomp( argv[2], argv[3], 0, false );
-		else if ( strcmp( argv[1], "ec" ) == 0 )
-			EComp( argv[2], argv[3], false );
-		else if ( strcmp( argv[1], "ed" ) == 0 )
-			EDecomp( argv[2], argv[3], 0, false );
-		else if ( strcmp( argv[1], "nc" ) == 0 )
-			NComp( argv[2], argv[3] );
-		else if ( strcmp( argv[1], "nd" ) == 0 )
-			NDecomp( argv[2], argv[3], 0 );
-		else if ( strcmp( argv[1], "sc" ) == 0 )
-			SComp( argv[2], argv[3], false );
-		else if ( strcmp( argv[1], "sd" ) == 0 )
-			SDecomp( argv[2], argv[3], 0, 0 );
-		else
-			usage( argv[0] );
-		break;
+		processFile( argv );
 	}
 
 	// Done
-	return(0);
+	return 0;
 }
