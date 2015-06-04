@@ -4,9 +4,10 @@
 
 #include <stdio.h>
 //#include <stdbool.h>	// use with C compiler
-#include <string.h>	// use with C++ compiler
+//#include <string.h>	// use with C++ compiler
 #include <sys/stat.h>
 
+extern "C" {
 	/*
 	argv[0] = Program name
 	argv[1] = Mode
@@ -84,4 +85,6 @@ int main ( int argc, char *argv[1] )
 
 	// Done
 	return 0;
+}
+
 }
