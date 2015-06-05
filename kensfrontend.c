@@ -5,6 +5,7 @@
 #include <stdio.h>
 //#include <stdbool.h>	// use with C compiler
 #include <sys/stat.h>
+#include <libgen.h>
 #include "KENS/Include/KENS.h"
 
 extern "C" {
@@ -20,17 +21,21 @@ char enipath[] = "libs/Enigma.dll";
 char nempath[] = "libs/Nemesis.dll";
 char saxpath[] = "libs/Saxman.dll";
 
-void usage ( char programName[] )
+void usage ( char *programpath )
 {
-	printf( "Frontend made by Clownacy\n\n  Usage:  %s [mode] [inputdir] [outputdir]\n\n  Modes:\n   kc - Kosinski (compress)\n   kd - Kosinski (decompress)\n   ec - Enigma (compress)\n   ed - Enigma (decompress)\n   nc - Nemesis (compress)\n   nd - Nemesis (decompress)\n   sc - Saxman (compress)\n   sd - Saxman (decompress)\n", programName );
+	char *programname = basename( programpath );
+	printf( "Frontend made by Clownacy\n\n  Usage:  %s [mode] [inputdir] [outputdir]\n\n  Modes:\n   kc - Kosinski (compress)\n   kd - Kosinski (decompress)\n   ec - Enigma (compress)\n   ed - Enigma (decompress)\n   nc - Nemesis (compress)\n   nd - Nemesis (decompress)\n   sc - Saxman (compress)\n   sd - Saxman (decompress)\n", programname );
 }
 
-bool checkFileExist ( char *filename )
+bool checkFileExist ( char *filepath )
 {
 	struct stat buffer;
-	bool exist = ( stat(filename, &buffer) == 0 );
+	bool exist = ( stat(filepath, &buffer) == 0 );
 	if ( !exist )
+	{
+		char *filename = basename( filepath );
 		printf( "\n  File '%s' not found\n", filename );
+	}
 	return exist;
 }
 
