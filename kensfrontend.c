@@ -1,7 +1,5 @@
 // Clownacy's KENS v1.4 frontend
 
-#define WinExplorer
-
 #include <stdio.h>
 //#include <stdbool.h>	// use with C compiler
 #include <sys/stat.h>
@@ -131,7 +129,7 @@ int main ( int argc, char *argv[1] )
 		usage( argv[0] );
 		break;
 
-	#ifdef WinExplorer
+	#ifdef _WIN32
 		// If opened by Explorer, don't close immediately
 		case 1:
 			usage( argv[0] );
