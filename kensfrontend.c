@@ -4,7 +4,6 @@
 
 #include <stdio.h>
 //#include <stdbool.h>	// use with C compiler
-//#include <string.h>	// use with C++ compiler
 #include <sys/stat.h>
 #include "KENS/Include/KENS.h"
 
