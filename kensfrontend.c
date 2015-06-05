@@ -4,26 +4,15 @@
 //#include <stdbool.h>	// use with C compiler
 #include <sys/stat.h>
 #include <libgen.h>
+#include "KENS.h"
 
+extern "C" {
 	/*
 	argv[0] = Program name
 	argv[1] = Mode
 	argv[2] = Input path
 	argv[3] = Output path
 	*/
-
-long KComp(char *SrcFile, char *DstFile, int SlideWin, int RecLen, bool Moduled);
-long KDecomp(char *SrcFile, char *DstFile, long Pointer, bool Moduled);
-long EComp(char *SrcFile, char *DstFile, bool Padding);
-long EDecomp(char *SrcFile, char *DstFile, long Pointer, bool Padding);
-long NComp(char *SrcFile, char *DstFile);
-long NDecomp(char *SrcFile, char *DstFile, long Pointer);
-long SComp(char *SrcFile, char *DstFile, bool WithSize);
-long SDecomp(char *SrcFile, char *DstFile, long Pointer, unsigned short Size);
-
-
-extern "C" {
-
 
 void usage ( char *programpath )
 {
