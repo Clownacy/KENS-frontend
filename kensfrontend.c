@@ -1,13 +1,10 @@
 // Clownacy's KENS v1.4 frontend
 
-#define WinExplorer
-
 #include <stdio.h>
 //#include <stdbool.h>	// use with C compiler
-//#include <string.h>	// use with C++ compiler
 #include <sys/stat.h>
+#include <libgen.h>
 
-extern "C" {
 	/*
 	argv[0] = Program name
 	argv[1] = Mode
@@ -24,17 +21,25 @@ long NDecomp(char *SrcFile, char *DstFile, long Pointer);
 long SComp(char *SrcFile, char *DstFile, bool WithSize);
 long SDecomp(char *SrcFile, char *DstFile, long Pointer, unsigned short Size);
 
-void usage ( char programName[] )
+
+extern "C" {
+
+
+void usage ( char *programpath )
 {
-	printf( "Frontend made by Clownacy\n\n  Usage:  %s [mode] [inputdir] [outputdir]\n\n  Modes:\n   kc - Kosinski (compress)\n   kd - Kosinski (decompress)\n   ec - Enigma (compress)\n   ed - Enigma (decompress)\n   nc - Nemesis (compress)\n   nd - Nemesis (decompress)\n   sc - Saxman (compress)\n   sd - Saxman (decompress)\n", programName );
+	char *programname = basename( programpath );
+	printf( "Frontend made by Clownacy\n\n  Usage:  %s [mode] [inputdir] [outputdir]\n\n  Modes:\n   kc - Kosinski (compress)\n   kd - Kosinski (decompress)\n   ec - Enigma (compress)\n   ed - Enigma (decompress)\n   nc - Nemesis (compress)\n   nd - Nemesis (decompress)\n   sc - Saxman (compress)\n   sd - Saxman (decompress)\n", programname );
 }
 
-bool checkFileExist ( char *filename )
+bool checkFileExist ( char *filepath )
 {
 	struct stat buffer;
-	bool exist = ( stat(filename, &buffer) == 0 );
+	bool exist = ( stat(filepath, &buffer) == 0 );
 	if ( !exist )
+	{
+		char *filename = basename( filepath );
 		printf( "\n  File '%s' not found\n", filename );
+	}
 	return exist;
 }
 
@@ -68,7 +73,7 @@ int main ( int argc, char *argv[1] )
 		usage( argv[0] );
 		break;
 
-	#ifdef WinExplorer
+	#ifdef _WIN32
 		// If opened by Explorer, don't close immediately
 		case 1:
 			usage( argv[0] );
