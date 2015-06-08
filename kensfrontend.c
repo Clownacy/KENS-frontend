@@ -14,7 +14,12 @@ extern "C" {
 	argv[3] = Output path
 	*/
 
-void usage ( char *programpath )
+char *programpath;
+char *settings;
+char *inputpath;
+char *outputpath;
+
+void usage()
 {
 	char *programname = basename( programpath );
 	printf( "Frontend made by Clownacy\n\n  Usage:  %s [mode] [inputdir] [outputdir]\n\n  Modes:\n   kc - Kosinski (compress)\n   kd - Kosinski (decompress)\n   ec - Enigma (compress)\n   ed - Enigma (decompress)\n   nc - Nemesis (compress)\n   nd - Nemesis (decompress)\n   sc - Saxman (compress)\n   sd - Saxman (decompress)\n", programname );
@@ -32,49 +37,54 @@ bool checkFileExist ( char *filepath )
 	return exist;
 }
 
-void processFile ( char *argv[1] )
+void processFile()
 {
-	if ( strcmp( argv[1], "kc" ) == 0 )
-		KComp( argv[2], argv[3], 8192, 256, false );
-	else if ( strcmp( argv[1], "kd" ) == 0 )
-		KDecomp( argv[2], argv[3], 0, false );
-	else if ( strcmp( argv[1], "ec" ) == 0 )
-		EComp( argv[2], argv[3], false );
-	else if ( strcmp( argv[1], "ed" ) == 0 )
-		EDecomp( argv[2], argv[3], 0, false );
-	else if ( strcmp( argv[1], "nc" ) == 0 )
-		NComp( argv[2], argv[3] );
-	else if ( strcmp( argv[1], "nd" ) == 0 )
-		NDecomp( argv[2], argv[3], 0 );
-	else if ( strcmp( argv[1], "sc" ) == 0 )
-		SComp( argv[2], argv[3], false );
-	else if ( strcmp( argv[1], "sd" ) == 0 )
-		SDecomp( argv[2], argv[3], 0, 0 );
+	if ( strcmp( settings, "kc" ) == 0 )
+		KComp( inputpath, outputpath, 8192, 256, false );
+	else if ( strcmp( settings, "kd" ) == 0 )
+		KDecomp( inputpath, outputpath, 0, false );
+	else if ( strcmp( settings, "ec" ) == 0 )
+		EComp( inputpath, outputpath, false );
+	else if ( strcmp( settings, "ed" ) == 0 )
+		EDecomp( inputpath, outputpath, 0, false );
+	else if ( strcmp( settings, "nc" ) == 0 )
+		NComp( inputpath, outputpath );
+	else if ( strcmp( settings, "nd" ) == 0 )
+		NDecomp( inputpath, outputpath, 0 );
+	else if ( strcmp( settings, "sc" ) == 0 )
+		SComp( inputpath, outputpath, false );
+	else if ( strcmp( settings, "sd" ) == 0 )
+		SDecomp( inputpath, outputpath, 0, 0 );
 	else
-		usage( argv[0] );
+		usage();
 }
 
 int main ( int argc, char *argv[1] )
 {
+	programpath = argv[0];
+	settings = argv[1];
+	inputpath = argv[2];
+	outputpath = argv[3];
+
 	switch ( argc )
 	{
 	default:
-		usage( argv[0] );
+		usage();
 		break;
 
 	#ifdef _WIN32
 		// If opened by Explorer, don't close immediately
 		case 1:
-			usage( argv[0] );
+			usage();
 			getchar();
 			break;
 	#endif
 
 	case 4:
-		if ( checkFileExist( argv[2] ) == false )
+		if ( checkFileExist( inputpath ) == false )
 			break;
 
-		processFile( argv );
+		processFile();
 	}
 
 	// Done
