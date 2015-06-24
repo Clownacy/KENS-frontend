@@ -6,7 +6,7 @@ if not exist bin\libs mkdir bin\libs
 echo done
 
 echo|set /p=Compiling program...
-g++ -O3 kensfrontend.c -o bin/kensfrontend.exe
+make >NUL
 echo done
 
 echo.
