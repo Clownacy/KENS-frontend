@@ -1,4 +1,5 @@
-// Clownacy's KENS v1.4 frontend
+// KENS v1.4 frontend
+// Copyright © 2015-2016 Clownacy
 
 #ifdef __cplusplus
 extern "C" {
