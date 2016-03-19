@@ -47,7 +47,7 @@ bool checkFileExist(const char* const filepath)
 	return exist;
 }
 
-bool handleModuleError(bool success, const char* const name)
+bool handleModuleError(const bool success, const char* const name)
 {
 	if (success == false)
 	{
