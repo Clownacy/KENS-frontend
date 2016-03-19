@@ -8,7 +8,9 @@ extern "C" {
 #include <stdbool.h>
 #include <sys/stat.h>
 #include <libgen.h>
+
 #include "KENS/Include/KENS.h"
+
 	/*
 	argv[0] = Program name
 	argv[1] = Mode
