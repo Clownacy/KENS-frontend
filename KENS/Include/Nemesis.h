@@ -30,7 +30,7 @@ long (__cdecl *NCompToBuf)(char *SrcFile, char *&DstBuffer, long *BufSize);
 long (__cdecl *NDecompToBuf)(char *SrcFile, char *&DstBuffer, long *BufSize, long Pointer);
 long (__cdecl *NFreeBuffer)(char *Buffer);
 
-bool NInit(char *DLL)
+bool NInit(const char* const DLL)
 {
 	HMODULE hNemesis = LoadLibrary(DLL);
 	if (!hNemesis) return false;

@@ -21,10 +21,10 @@ char* settings;
 char* inputpath;
 char* outputpath;
 
-char kospath[] = "libs/Kosinski.dll";
-char enipath[] = "libs/Enigma.dll";
-char nempath[] = "libs/Nemesis.dll";
-char saxpath[] = "libs/Saxman.dll";
+const char* const kospath = "libs/Kosinski.dll";
+const char* const enipath = "libs/Enigma.dll";
+const char* const nempath = "libs/Nemesis.dll";
+const char* const saxpath = "libs/Saxman.dll";
 
 void usage(void)
 {
@@ -32,19 +32,22 @@ void usage(void)
 	printf("Frontend made by Clownacy\n\n  Usage:  %s [mode] [inputdir] [outputdir]\n\n  Modes:\n   kc - Kosinski (compress)\n   kd - Kosinski (decompress)\n   ec - Enigma (compress)\n   ed - Enigma (decompress)\n   nc - Nemesis (compress)\n   nd - Nemesis (decompress)\n   sc - Saxman (compress)\n   sd - Saxman (decompress)\n", programname);
 }
 
-bool checkFileExist(char* filepath)
+bool checkFileExist(const char* const filepath)
 {
 	struct stat buffer;
 	bool exist = (stat(filepath, &buffer) == 0);
 	if (!exist)
 	{
-		char* filename = basename(filepath);
+		char* filename = (char*)malloc(strlen(filepath)+1);	// The '+1' is for the null-character
+		strcpy(filename, filepath);
+		filename = basename(filename);
 		printf("\n  File '%s' not found\n", filename);
+		free(filename);
 	}
 	return exist;
 }
 
-bool handleModuleError(bool success, char* name)
+bool handleModuleError(bool success, const char* const name)
 {
 	if (success == false)
 	{

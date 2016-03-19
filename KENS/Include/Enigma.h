@@ -30,7 +30,7 @@ long (__cdecl *ECompToBuf)(char *SrcFile, char *&DstBuffer, long *BufSize, bool 
 long (__cdecl *EDecompToBuf)(char *SrcFile, char *&DstBuffer, long *BufSize, long Pointer, bool Padding);
 long (__cdecl *EFreeBuffer)(char *Buffer);
 
-bool EInit(char *DLL)
+bool EInit(const char* const DLL)
 {
 	HMODULE hEnigma = LoadLibrary(DLL);
 	if (!hEnigma) return false;

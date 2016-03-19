@@ -30,7 +30,7 @@ long (__cdecl *SCompToBuf)(char *SrcFile, char *&DstBuffer, long *BufSize, bool 
 long (__cdecl *SDecompToBuf)(char *SrcFile, char *&DstBuffer, long *BufSize, long Pointer, unsigned short Size);
 long (__cdecl *SFreeBuffer)(char *Buffer);
 
-bool SInit(char *DLL)
+bool SInit(const char* const DLL)
 {
 	HMODULE hSaxman = LoadLibrary(DLL);
 	if (!hSaxman) return false;

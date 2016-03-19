@@ -32,7 +32,7 @@ long (__cdecl *KDecompToBuf)(char *SrcFile, char *&DstBuffer, long *BufSize, lon
 long (__cdecl *KCompToBufEx)(char *SrcFile, char *&DstBuffer, long *BufSize, long SlideWin, long RecLen, bool Moduled);
 long (__cdecl *KFreeBuffer)(char *Buffer);
 
-bool KInit(char *DLL)
+bool KInit(const char* const DLL)
 {
 	HMODULE hKosinski = LoadLibrary(DLL);
 	if (!hKosinski) return false;

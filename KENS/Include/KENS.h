@@ -51,7 +51,7 @@ long (__cdecl *SCompToBuf)(char *SrcFile, char *&DstBuffer, long *BufSize, bool 
 long (__cdecl *SDecompToBuf)(char *SrcFile, char *&DstBuffer, long *BufSize, long Pointer, unsigned short Size);
 long (__cdecl *SFreeBuffer)(char *Buffer);
 
-bool KInit(char *DLL)
+bool KInit(const char* const DLL)
 {
 	HMODULE hKosinski = LoadLibrary(DLL);
 	if (!hKosinski) return false;
@@ -75,7 +75,7 @@ bool KInit(char *DLL)
 	return true;
 }
 
-bool EInit(char *DLL)
+bool EInit(const char* const DLL)
 {
 	HMODULE hEnigma = LoadLibrary(DLL);
 	if (!hEnigma) return false;
@@ -95,7 +95,7 @@ bool EInit(char *DLL)
 	return true;
 }
 
-bool NInit(char *DLL)
+bool NInit(const char* const DLL)
 {
 	HMODULE hNemesis = LoadLibrary(DLL);
 	if (!hNemesis) return false;
@@ -115,7 +115,7 @@ bool NInit(char *DLL)
 	return true;
 }
 
-bool SInit(char *DLL)
+bool SInit(const char* const DLL)
 {
 	HMODULE hSaxman = LoadLibrary(DLL);
 	if (!hSaxman) return false;
