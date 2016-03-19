@@ -82,7 +82,7 @@ void processFile(void)
 	if (strcmp(settings, "kc") == 0)
 		if (initKosinskiModule() == true)
 			KComp(input_path, output_path, false);
-	else if (strcmp( settings, "kd") == 0)
+	else if (strcmp(settings, "kd") == 0)
 		if (initKosinskiModule() == true)
 			KDecomp(input_path, output_path, 0, false);
 	else if (strcmp(settings, "ec") == 0)
