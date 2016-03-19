@@ -1,12 +1,14 @@
 // Clownacy's KENS v1.4 frontend
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #include <stdio.h>
-//#include <stdbool.h>	// use with C compiler
+#include <stdbool.h>
 #include <sys/stat.h>
 #include <libgen.h>
 #include "KENS/Include/KENS.h"
-
-extern "C" {
 	/*
 	argv[0] = Program name
 	argv[1] = Mode
@@ -134,4 +136,6 @@ int main ( int argc, char *argv[1] )
 	return 0;
 }
 
+#ifdef __cplusplus
 }
+#endif
