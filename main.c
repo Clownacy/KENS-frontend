@@ -42,9 +42,14 @@ bool checkFileExist(const char* const file_path)
 	if (!file_exists)
 	{
 		char* filename = (char*)malloc(strlen(file_path)+1);	// The '+1' is for the null-character
+		if (filename == NULL)
+		{
+			puts("While trying to get file name for error logging, could not allocate memory for it");
+			exit(0);
+		}
 		strcpy(filename, file_path);
-		filename = basename(filename);
-		printf("\n  File '%s' not found\n", filename);
+		char *printed_filename = basename(filename);
+		printf("\n  File '%s' not found\n", printed_filename);
 		free(filename);
 	}
 	return file_exists;
@@ -83,8 +88,10 @@ bool initSaxmanModule(void)
 void processFile(void)
 {
 	if (strcmp(settings, "kc") == 0)
+	{
 		if (initKosinskiModule() == true)
 			KComp(input_path, output_path, false);
+	}
 	else if (strcmp(settings, "kd") == 0)
 		if (initKosinskiModule() == true)
 			KDecomp(input_path, output_path, 0, false);
