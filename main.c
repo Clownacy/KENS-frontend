@@ -1,16 +1,16 @@
 // KENS v1.4 frontend
 // Copyright © 2015-2018 Clownacy
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
 #include <stdbool.h>
 #include <stdio.h>
 #include <string.h>
 #include <sys/stat.h>
 
 #include "KENS/Include/KENS.h"
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 static char *program_path;
 static char *settings;
