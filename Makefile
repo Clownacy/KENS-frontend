@@ -1,4 +1,4 @@
-CXXFLAGS := -O2 -s -Wall -Wextra -pedantic -std=c++98
+CXXFLAGS := -O2 -s -static -Wall -Wextra -pedantic -std=c++98
 
 all: bin/kensfrontend
 
