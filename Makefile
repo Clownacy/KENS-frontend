@@ -1,4 +1,9 @@
-CXXFLAGS := -O3 -s -std=c++11
+CFLAGS := -O2 -s -Wall -Wextra -pedantic -std=c99
 
-bin/kensfrontend.exe: main.c
-	$(CXX) $(CXXFLAGS) -o $@ $^
+all: bin/kensfrontend
+
+bin/kensfrontend: main.c
+	@mkdir -p bin
+	@mkdir -p bin/libs
+	@$(CC) $(CFLAGS) -o $@ $^ $(LDFLAGS) $(LIBS)
+	@cp -u KENS/*.dll bin/libs

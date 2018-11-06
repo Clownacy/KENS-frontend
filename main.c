@@ -1,148 +1,147 @@
 // KENS v1.4 frontend
-// Copyright © 2015-2016 Clownacy
+// Copyright © 2015-2018 Clownacy
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-#include <stdio.h>
 #include <stdbool.h>
+#include <stdio.h>
+#include <string.h>
 #include <sys/stat.h>
-#include <libgen.h>
 
 #include "KENS/Include/KENS.h"
 
-	/*
-	argv[0] = Program name
-	argv[1] = Mode
-	argv[2] = Input path
-	argv[3] = Output path
-	*/
+static char *program_path;
+static char *settings;
+static char *input_path;
+static char *output_path;
 
-char* program_path;
-char* settings;
-char* input_path;
-char* output_path;
+static const char kosinski_path[] = "libs/Kosinski.dll";
+static const char enigma_path[] = "libs/Enigma.dll";
+static const char nemesis_path[] = "libs/Nemesis.dll";
+static const char saxman_path[] = "libs/Saxman.dll";
 
-const char* const kosinski_path = "libs/Kosinski.dll";
-const char* const enigma_path = "libs/Enigma.dll";
-const char* const nemesis_path = "libs/Nemesis.dll";
-const char* const saxman_path = "libs/Saxman.dll";
-
-void usage(void)
+static void PrintUsage(void)
 {
-	char* program_name = basename(program_path);
-	printf("Frontend made by Clownacy\n\n  Usage:  %s [mode] [inputdir] [outputdir]\n\n  Modes:\n   kc - Kosinski (compress)\n   kd - Kosinski (decompress)\n   ec - Enigma (compress)\n   ed - Enigma (decompress)\n   nc - Nemesis (compress)\n   nd - Nemesis (decompress)\n   sc - Saxman (compress)\n   sd - Saxman (decompress)\n", program_name);
+	printf("Frontend made by Clownacy\n\n  Usage:  %s [mode] [inputdir] [outputdir]\n\n  Modes:\n   kc - Kosinski (compress)\n   kd - Kosinski (decompress)\n   ec - Enigma (compress)\n   ed - Enigma (decompress)\n   nc - Nemesis (compress)\n   nd - Nemesis (decompress)\n   sc - Saxman (compress)\n   sd - Saxman (decompress)\n", program_path);
 }
 
-bool checkFileExist(const char* const file_path)
+static bool CheckFileExist(const char* const file_path)
 {
 	struct stat buffer;
-	bool file_exists = (stat(file_path, &buffer) == 0);
+	bool file_exists = !stat(file_path, &buffer);
+
 	if (!file_exists)
-	{
-		char* filename = (char*)malloc(strlen(file_path)+1);	// The '+1' is for the null-character
-		if (filename == NULL)
-		{
-			puts("While trying to get file name for error logging, could not allocate memory for it");
-			exit(0);
-		}
-		strcpy(filename, file_path);
-		char *printed_filename = basename(filename);
-		printf("\n  File '%s' not found\n", printed_filename);
-		free(filename);
-	}
+		printf("\n  File '%s' not found\n", file_path);
+
 	return file_exists;
 }
 
-bool handleModuleError(const bool success, const char* const module_filename)
+static bool HandleModuleError(const bool success, const char* const module_filename)
 {
 	if (success == false)
 	{
 		printf("\n  Error initialising %s\n", module_filename);
-		checkFileExist(module_filename);	// Check if our error is the module file being missing
+		CheckFileExist(module_filename);	// Check if our error is the module file being missing
 	}
+
 	return success;
 }
 
-bool initKosinskiModule(void)
+static bool InitKosinskiModule(void)
 {
-	return handleModuleError(KInit(kosinski_path), kosinski_path);
+	return HandleModuleError(KInit(kosinski_path), kosinski_path);
 }
 
-bool initEnigmaModule(void)
+static bool InitEnigmaModule(void)
 {
-	return handleModuleError(EInit(enigma_path), enigma_path);
+	return HandleModuleError(EInit(enigma_path), enigma_path);
 }
 
-bool initNemesisModule(void)
+static bool InitNemesisModule(void)
 {
-	return handleModuleError(NInit(nemesis_path), nemesis_path);
+	return HandleModuleError(NInit(nemesis_path), nemesis_path);
 }
 
-bool initSaxmanModule(void)
+static bool InitSaxmanModule(void)
 {
-	return handleModuleError(SInit(saxman_path), saxman_path);
+	return HandleModuleError(SInit(saxman_path), saxman_path);
 }
 
-void processFile(void)
+static void ProcessFile(void)
 {
-	if (strcmp(settings, "kc") == 0)
+	if (!strcmp(settings, "kc"))
 	{
-		if (initKosinskiModule() == true)
+		if (InitKosinskiModule())
 			KComp(input_path, output_path, false);
 	}
-	else if (strcmp(settings, "kd") == 0)
-		if (initKosinskiModule() == true)
+	else if (!strcmp(settings, "kd"))
+	{
+		if (InitKosinskiModule())
 			KDecomp(input_path, output_path, 0, false);
-	else if (strcmp(settings, "ec") == 0)
-		if (initEnigmaModule() == true)
+	}
+	else if (!strcmp(settings, "ec"))
+	{
+		if (InitEnigmaModule())
 			EComp(input_path, output_path, false);
-	else if (strcmp(settings, "ed") == 0)
-		if (initEnigmaModule() == true)
+	}
+	else if (!strcmp(settings, "ed"))
+	{
+		if (InitEnigmaModule())
 			EDecomp(input_path, output_path, 0, false);
-	else if (strcmp(settings, "nc") == 0)
-		if (initNemesisModule() == true)
+	}
+	else if (!strcmp(settings, "nc"))
+	{
+		if (InitNemesisModule())
 			NComp(input_path, output_path);
-	else if (strcmp(settings, "nd") == 0)
-		if (initNemesisModule() == true)
+	}
+	else if (!strcmp(settings, "nd"))
+	{
+		if (InitNemesisModule())
 			NDecomp(input_path, output_path, 0);
-	else if (strcmp(settings, "sc") == 0)
-		if (initSaxmanModule() == true)
+	}
+	else if (!strcmp(settings, "sc"))
+	{
+		if (InitSaxmanModule())
 			SComp(input_path, output_path, false);
-	else if (strcmp(settings, "sd") == 0)
-		if (initSaxmanModule() == true)
+	}
+	else if (!strcmp(settings, "sd"))
+	{
+		if (InitSaxmanModule())
 			SDecomp(input_path, output_path, 0, 0);
+	}
 	else
-		usage();
+	{
+		PrintUsage();
+	}
 }
 
-int main(int argc, char* argv[])
+int main(int argc, char *argv[])
 {
 	program_path = argv[0];
 	settings = argv[1];
 	input_path = argv[2];
 	output_path = argv[3];
 
-	switch(argc)
+	switch (argc)
 	{
 	default:
-		usage();
+		PrintUsage();
 		break;
 
 	#ifdef _WIN32
 	// If opened by Explorer, don't close immediately
 	case 1:
-		usage();
+		PrintUsage();
 		getchar();
 		break;
 	#endif
 
 	case 4:
-		if(checkFileExist(input_path) == false)
-			break;
+		if (CheckFileExist(input_path))
+			ProcessFile();
 
-		processFile();
 		break;
 	}
 
