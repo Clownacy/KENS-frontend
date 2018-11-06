@@ -2,4 +2,4 @@
 *.h		text
 *.cpp		text
 *.bat		text
-*.HTML		binary
+*.HTML		text
