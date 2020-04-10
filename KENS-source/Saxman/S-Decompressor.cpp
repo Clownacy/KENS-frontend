@@ -58,7 +58,11 @@ long SDecomp(char *SrcFile, char *DstFile, long Location, unsigned short Size)
 
 	fseek(Src, Location, SEEK_SET);
 
-	if (!Size) fread(&Size, 2, 1, Src);
+	if (!Size)
+	{
+		fread(&Size, 2, 1, Src);
+		Size += 2;
+	}
 
 	while(1)
 	{
