@@ -29,7 +29,6 @@
 #include <malloc.h>
 #include <fcntl.h>
 #include <sys/stat.h>
-#include <io.h>
 #include <math.h>
 #include <string.h>
 #include <stdio.h>
@@ -37,7 +36,7 @@
 int stage_1 (long *pointer, char *rompointer, char *bufferpointer);
 void stage_2 (long *pointer, char *rompointer, char *bufferpointer, unsigned long *tiles, short rtiles, bool alt_out, int *out_loc);
 
-long __cdecl NDecomp(char *SrcFile, char *DstFile, long Pointer)
+long NDecomp(char *SrcFile, char *DstFile, long Pointer)
 {
 // In the following code, I removed the declaration of the Pointer variable as it is now passed
 // as parameters. I also removed all console I/O operation as the function does not need to ask
@@ -47,7 +46,8 @@ long __cdecl NDecomp(char *SrcFile, char *DstFile, long Pointer)
 //	cin.setf(ios::hex);
 
 //misc variables and arrays
-	int openrom = 0, result = 0, out_loc = 0, loopcount = 0, file = 0, romsize = 0;
+	FILE *openrom = 0, *file = 0;
+	int result = 0, out_loc = 0, loopcount = 0, romsize = 0;
 	long pointer = Pointer; //place in the rom to load from */
 	unsigned short rtiles; //remaining tiles to decompress
 	bool alt_out = false; //flag to change between the two different output modes
@@ -62,16 +62,17 @@ long __cdecl NDecomp(char *SrcFile, char *DstFile, long Pointer)
 //prompts for name of rom and reads it into memory
 /*	cout << "Enter name of rom:\t\t\t"; */
 /*	cin >> romfilename; */
-	openrom = _open( romfilename, _S_IWRITE, _O_BINARY );
-	if (openrom < 0)
+	openrom = fopen( romfilename, "rb" );
+	if (openrom == NULL)
 	{
 /*		cout << "\n\nInvalid rom filename!"; */
 		return -1;
 	}
-	result = _setmode(openrom, _O_BINARY);
-	romsize = _filelength(openrom);
+	fseek(openrom, 0, SEEK_END);
+	romsize = ftell(openrom);
+	rewind(openrom);
 	char* rompointer = (char *)calloc( romsize, 0x01 );
-	result = _read(openrom, rompointer, romsize);
+	result = fread(rompointer, 1, romsize, openrom);
 
 //prompts for name of output file and pointer in rom
 /*	cout << "Enter name of output file:\t\t"; */
@@ -99,18 +100,17 @@ long __cdecl NDecomp(char *SrcFile, char *DstFile, long Pointer)
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //Additional filehanding to read decompressed tiles from memory into file
-	file = _creat(outfilename, _S_IWRITE);
-	result = _setmode(file, _O_BINARY);
+	file = fopen(outfilename, "wb");
 	for(loopcount = 0; loopcount < out_loc; loopcount++)
 	{
 		tiles[loopcount] = ((tiles[loopcount] & 0xFF000000) / 0x1000000) + 
 						   ((tiles[loopcount] & 0xFF0000) / 0x100) + 
 						   ((tiles[loopcount] & 0xFF00) *0x100) + 
 						   ((tiles[loopcount] & 0xFF) * 0x1000000); //byteswaps the output before writing to the output file
-		result = _write(file, (&tiles[loopcount]) , 4);
+		result = fwrite((&tiles[loopcount]) , 1, 4, file);
 	}
-	result = _close(file);
-	_close(openrom);
+	result = fclose(file);
+	fclose(openrom);
 	return 0;
 }
 

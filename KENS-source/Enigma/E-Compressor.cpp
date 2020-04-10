@@ -44,7 +44,6 @@
 #include <malloc.h>
 #include <fcntl.h>
 #include <sys/stat.h>
-#include <io.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -73,8 +72,8 @@ unsigned char *pointer = 0;
 unsigned char *outpointer = 0;
 short checkbuffer = 0;
 int loopcount;
-int infile;
-int outfile;
+FILE *infile;
+FILE *outfile;
 int infilelength;
 int offset = 0;
 int waitingbits = 0;
@@ -128,16 +127,16 @@ long EComp(char *SrcFile, char *DstFile, bool padding)
 // There starts the original code by Nemesis (all Console I/O opperations were removed)
 /////////////////////////////////////////////////////////////////////////////////////////
 //File handling
-	infile = _open(argv[1], _S_IWRITE, _O_BINARY);
-	if (infile < 0)
+	infile = fopen(argv[1], "rb");
+	if (infile == NULL)
 	{
 //		cout << "\n\nError opening source file!";
 		return -1;
 	}
-	outfile = _creat(argv[2], _S_IWRITE);
-	result = _setmode(infile, _O_BINARY);
-	result = _setmode(outfile, _O_BINARY);
-	infilelength = _filelength(infile);
+	outfile = fopen(argv[2], "wb");
+	fseek(infile, 0, SEEK_END);
+	infilelength = ftell(infile);
+	rewind(infile);
 	pointer = (unsigned char *)calloc(infilelength, 0x01);
 
 /////////////////////////////////////////////////////////////////////////////////////////
@@ -145,18 +144,18 @@ long EComp(char *SrcFile, char *DstFile, bool padding)
 //						- is stored in the full 80x80 block version
 	if(padding)
 	{
-		_lseek(infile, 0x1000, 0);
+		fseek(infile, 0x1000, 0);
 		for(loopcount = 0; loopcount < 0x2000; loopcount += 0x80)
 		{
-			_lseek(infile, _tell(infile) + 0x20, 0);
-			_read(infile, (pointer + (loopcount / 2)), 0x40);
-			_lseek(infile, _tell(infile) + 0x20, 0);
+			fseek(infile, ftell(infile) + 0x20, 0);
+			fread((pointer + (loopcount / 2)), 1, 0x40, infile);
+			fseek(infile, ftell(infile) + 0x20, 0);
 		}
 		infilelength = 0x1000;
 	}
 	else
 	{
-		_read(infile, pointer, infilelength);
+		fread(pointer, 1, infilelength, infile);
 	}
 
 	tempval = *(pointer);
@@ -187,12 +186,12 @@ long EComp(char *SrcFile, char *DstFile, bool padding)
 	unsigned char crapway2 = (incrementing_value & 0x00FF);
 	unsigned char crapway3 = (common_value >> 8);
 	unsigned char crapway4 = (common_value & 0x00FF);
-	_write(outfile, &packet_length, 0x1);
-	_write(outfile, &bitmask, 0x1);
-	_write(outfile, &crapway1, 0x1);
-	_write(outfile, &crapway2, 0x1);
-	_write(outfile, &crapway3, 0x1);
-	_write(outfile, &crapway4, 0x1);
+	fwrite(&packet_length, 1, 0x1, outfile);
+	fwrite(&bitmask, 1, 0x1, outfile);
+	fwrite(&crapway1, 1, 0x1, outfile);
+	fwrite(&crapway2, 1, 0x1, outfile);
+	fwrite(&crapway3, 1, 0x1, outfile);
+	fwrite(&crapway4, 1, 0x1, outfile);
 	bitmask <<= 3;
 
 /////////////////////////////////////////////////////////////////////////////////////////
@@ -210,7 +209,7 @@ long EComp(char *SrcFile, char *DstFile, bool padding)
 			writebit(1);
 			writebit(1);
 			bytebuffer <<= (8 - waitingbits);
-			_write(outfile, &bytebuffer, 0x1);
+			fwrite(&bytebuffer, 1, 0x1, outfile);
 			done = true;
 			continue;
 		}
@@ -251,13 +250,13 @@ long EComp(char *SrcFile, char *DstFile, bool padding)
 		writecomprep(comprep);
 	}
 
-//	printf("\t\t\t\tDone!\n\n%s successfully compressed into file %s\nOriginal filesize:\t%i\nCompressed filesize:\t%i\nPercentage of original:\t%i", argv[1], argv[2], infilelength, _tell(outfile), (int)(((float)_tell(outfile) / (float)infilelength) * 100));
+//	printf("\t\t\t\tDone!\n\n%s successfully compressed into file %s\nOriginal filesize:\t%i\nCompressed filesize:\t%i\nPercentage of original:\t%i", argv[1], argv[2], infilelength, ftell(outfile), (int)(((float)ftell(outfile) / (float)infilelength) * 100));
 
-	if (_tell(outfile) & 1) _lseek(outfile, 1, SEEK_CUR);
+	if (ftell(outfile) & 1) fseek(outfile, 1, SEEK_CUR);
 
 	free(pointer);
-	_close(infile);
-	_close(outfile);
+	fclose(infile);
+	fclose(outfile);
 	return 0;
 }
 
@@ -273,7 +272,7 @@ unsigned char writebit(unsigned char bit)
 
 	if(waitingbits >= 8)
 	{
-		_write(outfile, &bytebuffer, 0x1);
+		fwrite(&bytebuffer, 1, 0x1, outfile);
 		waitingbits = 0;
 	}
 	return bit;

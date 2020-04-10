@@ -26,7 +26,6 @@
 #include <malloc.h>
 #include <fcntl.h>
 #include <sys/stat.h>
-#include <io.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -52,8 +51,8 @@ unsigned short addvalue = 0;
 unsigned short outvalue = 0;
 int loopcount;
 
-int infile;
-int outfile;
+FILE *infile;
+FILE *outfile;
 int infilelength;
 int offset = 0;
 unsigned char *pointer = 0;
@@ -79,8 +78,7 @@ long EDecomp(char *SrcFile, char *DstFile, long Pointer, bool padding)
 	char argv[4][260];
 	strcpy(argv[1], SrcFile);
 	strcpy(argv[2], DstFile);
-	strcpy(argv[3], "0x");
-	itoa(Pointer, argv[3]+2, 16);
+	sprintf(argv[3], "0x%lX", Pointer);
 
 // I prefered to initialize the following variables before starting the algorithm.
 	processed_bits = 0;
@@ -103,19 +101,20 @@ long EDecomp(char *SrcFile, char *DstFile, long Pointer, bool padding)
 	init = true;
 
 // There starts the original code by Nemesis (all Console I/O operations were removed)
-	infile = _open(argv[1], _S_IWRITE, _O_BINARY);
-	if (infile < 0)
+	infile = fopen(argv[1], "rb");
+	if (infile == NULL)
 	{
 //		cout << "\n\nInvalid rom filename!";
 		return -1;
 	}
-	_setmode(infile, _O_BINARY);
-	infilelength = _filelength(infile);
+	fseek(infile, 0, SEEK_END);
+	infilelength = ftell(infile);
+	rewind(infile);
 	pointer = (unsigned char *)calloc(infilelength, 0x01);
 	outpointer = (unsigned char *)calloc(0x100000, 0x01);
 	paddingpointer = (unsigned char *)calloc(0x1000, 0x01);
 
-	_read(infile, pointer, infilelength);
+	fread(pointer, 1, infilelength, infile);
 
 	if(argv[3][1] == 'x')
 	{
@@ -230,22 +229,22 @@ long EDecomp(char *SrcFile, char *DstFile, long Pointer, bool padding)
 
 /////////////////////////////////////////////////////////////////////////////////////////
 //Output completed file
-	outfile = _creat(argv[2], _S_IWRITE);
-	result = _setmode(outfile, _O_BINARY);
+	outfile = fopen(argv[2], "wb");
+
 	if(padding)
 	{
-		_write(outfile, paddingpointer, 0x1000);
+		fwrite(paddingpointer, 1, 0x1000, outfile);
 		for(loopcount = 0; loopcount < 0x2000; loopcount += 0x80)
 		{
-			_write(outfile, paddingpointer, 0x20);
-			_write(outfile, outpointer + (loopcount / 2) , 0x40);
-			_write(outfile, paddingpointer, 0x20);
+			fwrite(paddingpointer, 1, 0x20, outfile);
+			fwrite(outpointer + (loopcount / 2) , 1, 0x40, outfile);
+			fwrite(paddingpointer, 1, 0x20, outfile);
 		}
-		_write(outfile, paddingpointer, 0x1000);
+		fwrite(paddingpointer, 1, 0x1000, outfile);
 	}
 	else
 	{
-		_write(outfile, outpointer, outoffset);
+		fwrite(outpointer, 1, outoffset, outfile);
 	}
 
 //	printf("Done!\n\n");
@@ -258,8 +257,8 @@ long EDecomp(char *SrcFile, char *DstFile, long Pointer, bool padding)
 	free(pointer);
 	free(outpointer);
 	free(paddingpointer);
-	_close(outfile);
-	_close(infile);
+	fclose(outfile);
+	fclose(infile);
 	return 0;
 }
 

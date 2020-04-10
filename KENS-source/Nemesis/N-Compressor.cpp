@@ -40,7 +40,6 @@
 #include <malloc.h>
 #include <fcntl.h>
 #include <sys/stat.h>
-#include <io.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -61,8 +60,8 @@ int tempoffset = 0;
 int tiles = 0;
 int bitoffset = 4;
 int loopcount;
-int infile;
-int outfile;
+FILE *infile;
+FILE *outfile;
 int infilelength;
 int offset = 0;
 int waitingbits = 0;
@@ -90,7 +89,7 @@ unsigned char currentnybble = 0;
 /***********************************Entry point*****************************************\
 |
 \***********************************Entry point*****************************************/
-long __cdecl NComp(char *SrcFile, char *DstFile)
+long NComp(char *SrcFile, char *DstFile)
 {
 // The original code by Nemesis allowed to pass a pointer to the location of the source
 // file to start compressing from, but I'm not using it, for simplicity
@@ -102,8 +101,7 @@ long __cdecl NComp(char *SrcFile, char *DstFile)
 	char argv[4][260];
 	strcpy(argv[1], SrcFile);
 	strcpy(argv[2], DstFile);
-	strcpy(argv[3], "0x");
-	itoa(Pointer, argv[3]+2, 16);
+	sprintf(argv[3], "0x%lX", Pointer);
 
 // I prefered to initialize the following variables before starting the algorithm.
 	loopcount2 = 0;
@@ -155,16 +153,16 @@ long __cdecl NComp(char *SrcFile, char *DstFile)
 
 /////////////////////////////////////////////////////////////////////////////////////////
 //File handling
-	infile = _open(argv[1], _S_IWRITE, _O_BINARY);
-	if (infile < 0)
+	infile = fopen(argv[1], "rb");
+	if (infile == NULL)
 	{
 //		cout << "\n\nError opening source file!";
 		return -1;
 	}
-	outfile = _creat(argv[2], _S_IWRITE);
-	result = _setmode(infile, _O_BINARY);
-	result = _setmode(outfile, _O_BINARY);
-	infilelength = _filelength(infile);
+	outfile = fopen(argv[2], "wb");
+	fseek(infile, 0, SEEK_END);
+	infilelength = ftell(infile);
+	rewind(infile);
 	if(infilelength < offset)
 	{
 		printf("\n\nInvalid offset!!");
@@ -172,8 +170,8 @@ long __cdecl NComp(char *SrcFile, char *DstFile)
 	infilepointer = (unsigned char *)calloc((infilelength - offset), 0x01);
 	mode0cmppointer = (unsigned char *)calloc((infilelength - offset), 0x01);
 	mode1cmppointer = (unsigned char *)calloc((infilelength - offset), 0x01);
-	_lseek(infile, offset, SEEK_SET);
-	_read(infile, infilepointer, (infilelength - offset));
+	fseek(infile, offset, SEEK_SET);
+	fread(infilepointer, 1, (infilelength - offset), infile);
 
 //	printf("\n\nBeginning mode 0 compression\n");
 	workingpointer = mode0cmppointer;
@@ -197,24 +195,24 @@ long __cdecl NComp(char *SrcFile, char *DstFile)
 
 	if(mode1cmpoffset < mode0cmpoffset)
 	{
-		_write(outfile, mode1cmppointer, mode1cmpoffset);
+		fwrite(mode1cmppointer, 1, mode1cmpoffset, outfile);
 //		printf("\n\n\n%s compressed into %s from offset %i using mode 1\nOriginal filesize:\t%i\nCompressed filesize:\t%i\nPercentage of original:\t%f", argv[1], argv[2], offset, infilelength, mode1cmpoffset, (((float)mode1cmpoffset / (float)infilelength) * 100));
 	}
 	else
 	{
-		_write(outfile, mode0cmppointer, mode0cmpoffset);
+		fwrite(mode0cmppointer, 1, mode0cmpoffset, outfile);
 //		printf("\n\n\n%s compressed into %s from offset %i using mode 0\nOriginal filesize:\t%i\nCompressed filesize:\t%i\nPercentage of original:\t%f", argv[1], argv[2], offset, infilelength, mode0cmpoffset, (((float)mode0cmpoffset / (float)infilelength) * 100));
 	}
 
-	if (_tell(outfile) & 1) _lseek(outfile, 1, SEEK_CUR);
+	if (ftell(outfile) & 1) fseek(outfile, 1, SEEK_CUR);
 
 /////////////////////////////////////////////////////////////////////////////////////////
 //Cleanup
 	free(infilepointer);
 	free(mode0cmppointer);
 	free(mode1cmppointer);
-	_close(infile);
-	_close(outfile);
+	fclose(infile);
+	fclose(outfile);
 
 	return 0;
 }
@@ -565,7 +563,7 @@ unsigned char writedata(int data, int writecount)
 		waitingbits++;
 		if(waitingbits >= 8)
 		{
-//			_write(outfile, &bytebuffer, 0x1);
+//			fwrite(&bytebuffer, 1, 0x1, outfile);
 			*(workingpointer + workingoffset++) = bytebuffer;
 			waitingbits = 0;
 		}
@@ -583,7 +581,7 @@ void flush_writebuffer(void)
 	if(waitingbits > 0)
 	{
 		bytebuffer <<= (8 - waitingbits);
-//		_write(outfile, &bytebuffer, 0x1);
+//		fwrite(&bytebuffer, 1, 0x1, outfile);
 		*(workingpointer + workingoffset++) = bytebuffer;
 		waitingbits = 0;
 	}
